@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchAPI } from "../../api"; // Imports central API utility
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useCartStore } from "../../Cart/useCartStore";
 
 import mainShoe from "../../assets/shoe.svg";
 import thumb1 from "../../assets/thumb1.svg";
@@ -12,19 +12,24 @@ import featureShoe from "../../assets/shoe.svg";
 
 const thumbnails = [thumb1, thumb2, thumb3, thumb4, thumb5];
 
-const colors = [
+const defaultColors = [
   { name: "Black", hex: "#1a1a1a" },
   { name: "Gray", hex: "#4a4a4a" },
   { name: "Tan", hex: "#D6A36A" },
   { name: "Light Gray", hex: "#9a9a9a" },
 ];
 
-const sizes = [37, 42, 47, 30, 34, 36];
-
+const defaultSizes = [37, 42, 47, 30, 34, 36];
 const tabs = ["Description", "Details", "Shipping & Returns", "Reviews (128)"];
 
 const ProductDetail = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  const [product, setProduct] = useState(null);
+  const [fetching, setFetching] = useState(true);
+
   const [activeImage, setActiveImage] = useState(mainShoe);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -32,6 +37,33 @@ const ProductDetail = () => {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setFetching(true);
+
+      try {
+        const productId = id || 1;
+        const response = await fetch(
+          `https://your-backend.onrender.com/products/${productId}`,
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to load product details.");
+        }
+
+        const data = await response.json();
+        setProduct(data);
+      } catch (err) {
+        console.error(err);
+        setProduct(null);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   const handleAddToCart = async () => {
     setMessage({ text: "", type: "" });
@@ -57,15 +89,15 @@ const ProductDetail = () => {
     try {
       setLoading(true);
 
-      await fetchAPI("/cart/items", {
-        method: "POST",
-        body: JSON.stringify({
-          productId: 1,
-          quantity: 1,
-          size: selectedSize,
-          color: colors[selectedColor].name,
-        }),
-      });
+      // 1. Ensure productId is a valid number for Java Long backend
+      const rawId = product?.id || id;
+      const cleanId =
+        typeof rawId === "string" ? rawId.replace(":", "") : rawId;
+      const numericProductId = Number(cleanId) || 1; // Fallback to 1 if NaN
+
+      const colorName = defaultColors[selectedColor]?.name || "Black";
+
+      await addToCart(numericProductId, 1, Number(selectedSize), colorName);
 
       setMessage({
         text: "Item added to cart successfully!",
@@ -83,16 +115,35 @@ const ProductDetail = () => {
     }
   };
 
+  if (fetching) {
+    return (
+      <div className="bg-[#0d0d0d] min-h-screen text-white flex items-center justify-center">
+        <p className="text-gray-400 animate-pulse">
+          Loading product details...
+        </p>
+      </div>
+    );
+  }
+
+  // Fallback defaults to prevent undefined property errors
+  const displayTitle =
+    product?.name || product?.title || "Solemora Air Max Pro";
+  const displayPrice = product?.price || "134";
+  const displayDesc =
+    product?.description ||
+    "Experience unmatched comfort and style. Built for performance and designed for everyday wear.";
+
   return (
     <div className="bg-[#0d0d0d] min-h-screen text-white xl:px-16 px-4 py-8">
+      {/* Breadcrumb */}
       <p className="text-xs sm:text-sm text-gray-400 mb-6 overflow-x-auto whitespace-nowrap">
         Home <span className="mx-1">›</span> Men <span className="mx-1">›</span>{" "}
         Sneakers <span className="mx-1">›</span>{" "}
-        <span className="text-white">Solemora Air Max Pro</span>
+        <span className="text-white">{displayTitle}</span>
       </p>
 
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
-        {/* Thumbnails + main image */}
+        {/* Gallery */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex sm:flex-col gap-3 order-2 sm:order-1 overflow-x-auto sm:overflow-visible">
             {thumbnails.map((thumb, i) => (
@@ -114,65 +165,44 @@ const ProductDetail = () => {
             <span className="absolute top-4 left-4 bg-[#E8A857] text-black text-xs font-bold px-3 py-1 rounded-full">
               -25%
             </span>
-            <button className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center">
-              🔍
-            </button>
             <img
               src={activeImage}
-              alt="Solemora Air Max Pro"
+              alt={displayTitle}
               className="w-44 h-44 sm:w-52 sm:h-52 lg:w-56 lg:h-56 object-contain"
             />
-
-            <div className="absolute bottom-0 left-0 right-0 flex justify-around bg-[#1a1a1a]/90 rounded-b-2xl py-3 text-[10px] sm:text-xs text-gray-300 border-t border-white/10 px-2">
-              <span className="text-center">
-                🚚 Free Shipping
-                <br />
-                <span className="text-gray-500">On orders over $75</span>
-              </span>
-              <span className="text-center">
-                ↩ Easy Returns
-                <br />
-                <span className="text-gray-500">30-day money back</span>
-              </span>
-              <span className="text-center">
-                ✓ 100% Original
-                <br />
-                <span className="text-gray-500">Authentic & premium</span>
-              </span>
-            </div>
           </div>
         </div>
 
+        {/* Product Info */}
         <div className="flex-1">
           <span className="bg-[#E8A857] text-black text-xs font-bold px-3 py-1 rounded-full">
             Best Seller
           </span>
 
           <h1 className="text-2xl sm:text-3xl font-bold mt-4">
-            Solemora Air Max Pro
+            {displayTitle}
           </h1>
 
           <div className="flex flex-wrap items-center gap-3 mt-3">
             <span className="text-xl sm:text-2xl font-bold text-[#E8A857]">
-              134$
+              ${displayPrice}
             </span>
-            <span className="text-gray-500 line-through">160$</span>
-            <span className="bg-[#E8A857]/20 text-[#E8A857] text-sm font-semibold px-2 py-1 rounded">
-              -16%
+            <span className="text-gray-500 line-through">
+              ${(Number(displayPrice) * 1.2).toFixed(0)}
             </span>
           </div>
 
           <p className="text-gray-400 italic mt-4 max-w-md text-sm sm:text-base">
-            Experience unmatched comfort and style with the Solemora Air Max
-            Pro. Built for performance and designed for everyday wear.
+            {displayDesc}
           </p>
 
+          {/* Color Selector */}
           <div className="border-t border-white/10 mt-6 pt-6">
             <p className="text-sm mb-3">
-              Color: {colors[selectedColor].name} / White
+              Color: {defaultColors[selectedColor]?.name || "Selected"}
             </p>
             <div className="flex gap-3">
-              {colors.map((color, i) => (
+              {defaultColors.map((color, i) => (
                 <button
                   key={color.name}
                   onClick={() => setSelectedColor(i)}
@@ -185,15 +215,11 @@ const ProductDetail = () => {
             </div>
           </div>
 
+          {/* Size Selector */}
           <div className="mt-6">
-            <div className="flex justify-between items-center mb-3">
-              <p className="text-sm">Size: US</p>
-              <p className="text-xs text-green-400 flex items-center gap-1 cursor-pointer">
-                📏 Size Guide
-              </p>
-            </div>
+            <p className="text-sm mb-3">Size: US</p>
             <div className="flex flex-wrap gap-3">
-              {sizes.map((size) => (
+              {defaultSizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -209,11 +235,6 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <p className="flex items-center gap-2 text-sm mt-6">
-            <span className="w-2 h-2 bg-green-400 rounded-full" /> In Stock —
-            Ready to ship
-          </p>
-
           {message.text && (
             <div
               className={`mt-4 p-3 rounded-lg text-xs font-semibold text-center ${
@@ -226,7 +247,7 @@ const ProductDetail = () => {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <button
               onClick={handleAddToCart}
               disabled={loading}
@@ -234,17 +255,11 @@ const ProductDetail = () => {
             >
               {loading ? "ADDING..." : "ADD TO CART"}
             </button>
-            <button className="flex-1 border border-white/30 hover:bg-white/10 font-semibold py-3 rounded-lg transition">
-              BUY NOW
-            </button>
           </div>
-
-          <p className="text-center text-sm text-gray-400 mt-4 flex items-center justify-center gap-1 cursor-pointer hover:text-white">
-            ♡ Add to Wishlist
-          </p>
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="bg-[#1a1a1a] rounded-2xl mt-12 p-5 sm:p-8 flex flex-col lg:flex-row gap-8 lg:gap-10 items-center">
         <div className="flex-1 w-full">
           <div className="flex gap-4 sm:gap-8 border-b border-white/10 pb-4 mb-6 overflow-x-auto whitespace-nowrap">
@@ -263,18 +278,26 @@ const ProductDetail = () => {
             ))}
           </div>
 
-          <p className="italic text-gray-200 mb-6 max-w-lg text-sm sm:text-base">
-            The Solemora Air Max Pro combines a sleek design with advanced
-            cushioning for all-day comfort. Perfect for training, running, or
-            casual wear.
-          </p>
-
-          <ul className="space-y-2 text-gray-200 font-medium text-sm sm:text-base">
-            <li>✓ Lightweight and breathable mesh upper</li>
-            <li>✓ Air-cushioned sole for maximum comfort</li>
-            <li>✓ Durable rubber outsole for superior grip</li>
-            <li>✓ Perfect for sports and everyday wear</li>
-          </ul>
+          {activeTab === 0 && (
+            <p className="italic text-gray-200 text-sm sm:text-base">
+              {displayDesc}
+            </p>
+          )}
+          {activeTab === 1 && (
+            <p className="text-gray-300 text-sm">
+              Synthetic leather & breathable mesh upper.
+            </p>
+          )}
+          {activeTab === 2 && (
+            <p className="text-gray-300 text-sm">
+              Free shipping on orders over $75. 30-day returns.
+            </p>
+          )}
+          {activeTab === 3 && (
+            <p className="text-gray-300 text-sm">
+              ⭐ 4.8 / 5 Rating based on customer feedback.
+            </p>
+          )}
         </div>
 
         <img

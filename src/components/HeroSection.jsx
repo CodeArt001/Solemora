@@ -20,12 +20,12 @@ const HeroSection = () => {
         Crafted for those who never settle.
       </p>
       <div className=" flex flex-col xl:flex-row gap-6 text-white py-5">
-        <Link to="/man">
+        <Link to="/products/:id">
           <button className="bg-[#D6A36A] rounded-3xl px-10 py-2 w-full">
             SHOP NOW
           </button>
         </Link>
-        <button className="border-white border-2 rounded-3xl px-10 py-2">
+        <button className="border-white border-3 rounded-3xl px-10 py-2">
           EXPLORE
         </button>
       </div>

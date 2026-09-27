@@ -2,6 +2,7 @@ import navBG from "../assets/image.svg";
 import HeroSection from "./HeroSection";
 import CategoryCarousel from "./Features/CategoryCarousel";
 import BestSellers from "./Features/BestSellers";
+import USPStrip from "../pages/USPStrip";
 
 const Home = () => {
   return (
@@ -20,6 +21,7 @@ const Home = () => {
       <div className="bg-[#1E1E1E] relative z-10">
         <BestSellers />
       </div>
+      <USPStrip />
     </div>
   );
 };

@@ -17,42 +17,37 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setLoading(true);
 
     try {
-      setLoading(true);
+      // 1. Single API call to login endpoint
       const data = await fetchAPI("/auth/login", {
         method: "POST",
         body: JSON.stringify(credentials),
       });
 
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      console.log("Login Response:", data);
+
+      // 2. Extract token checking all common backend property names
+      const token = data.token || data.accessToken || data.jwt;
+
+      if (!token) {
+        throw new Error("No authentication token received from server.");
       }
 
-      // 2. Set success message and delay navigation
+      // 3. Save token immediately to localStorage
+      localStorage.setItem("token", token);
+
+      // 4. Update UI feedback and navigate
       setSuccess("Logged in successfully! Redirecting...");
       setTimeout(() => {
         navigate("/");
-      }, 1200);
+      }, 800);
     } catch (err) {
+      console.error("Login error:", err);
       setError(err.message || "Invalid email or password.");
     } finally {
       setLoading(false);
-    }
-
-    const data = await fetchAPI("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
-    });
-
-    console.log("Login Response:", data);
-
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-    } else if (data.jwt) {
-      localStorage.setItem("token", data.jwt);
-    } else if (data.accessToken) {
-      localStorage.setItem("token", data.accessToken);
     }
   };
 

@@ -8,6 +8,10 @@ import ProductDetail from "./components/Features/ProductDetail";
 import Home from "./components/Home";
 import Register from "./auth/Register";
 import Login from "./auth/Login";
+import ProtectedRoute from "./route/ProtectedRoute";
+import Checkout from "./Cart/Checkout";
+import OrderConfirmation from "./Cart/OrderConfirmation";
+import Man from "./pages/Man";
 
 function App() {
   const location = useLocation();
@@ -18,14 +22,23 @@ function App() {
   return (
     <>
       {showNavbar && (
-        <div className="sticky z-50 top-0 ">
+        <div className="sticky top-0 z-50 w-full">
           <Navbar />
         </div>
       )}
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/man" element={<ProductDetail />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route path="/man" element={<Man />} />
+          <Route
+            path="/order-confirmation/:orderId"
+            element={<OrderConfirmation />}
+          />
+        </Route>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
       </Routes>
