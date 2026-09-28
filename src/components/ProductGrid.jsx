@@ -1,6 +1,6 @@
 const ProductGrid = ({ title = "ALL PRODUCTS", products = [] }) => {
   return (
-    <div className="xl:px-10 px-4 py-10">
+    <div className="xl:px-10 px-4 pt-5 pb-10">
       <div className="flex items-center gap-4 mb-6">
         <p className="text-white font-title text-2xl">{title}</p>
         <div className="flex-1 h-[2px] bg-white/30" />

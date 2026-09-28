@@ -12,6 +12,8 @@ import ProtectedRoute from "./route/ProtectedRoute";
 import Checkout from "./Cart/Checkout";
 import OrderConfirmation from "./Cart/OrderConfirmation";
 import Man from "./pages/Man";
+import Footer from "./pages/Footer";
+// import Testimonials from "./pages/Testimonials";
 
 function App() {
   const location = useLocation();
@@ -26,7 +28,6 @@ function App() {
           <Navbar />
         </div>
       )}
-
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />} />
@@ -34,6 +35,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/man" element={<Man />} />
+          {/* <Route path="/testimonial" element={<Testimonials />} /> */}
           <Route
             path="/order-confirmation/:orderId"
             element={<OrderConfirmation />}
@@ -42,6 +44,11 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+      {showNavbar && (
+        <div className={location.pathname === "/" ? "bg-white pt-20" : ""}>
+          <Footer />
+        </div>
+      )}
     </>
   );
 }

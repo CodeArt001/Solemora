@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { fetchAPI } from "../api";
+import { isAuthenticated } from "../auth/auth";
 
 export const useCartStore = create((set, get) => ({
   cartItems: [],
@@ -47,6 +48,10 @@ export const useCartStore = create((set, get) => ({
    * Add item to backend Redis cart and re-sync
    */
   addToCart: async (productId, quantity = 1, size = "42", color = "Black") => {
+    if (!isAuthenticated()) {
+      throw new Error("Please sign in to add items to your cart.");
+    }
+
     set({ isLoading: true });
     try {
       await fetchAPI("/cart/items", {

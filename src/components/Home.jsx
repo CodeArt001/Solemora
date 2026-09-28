@@ -3,6 +3,7 @@ import HeroSection from "./HeroSection";
 import CategoryCarousel from "./Features/CategoryCarousel";
 import BestSellers from "./Features/BestSellers";
 import USPStrip from "../pages/USPStrip";
+import Testimonials from "../pages/Testimonials";
 
 const Home = () => {
   return (
@@ -22,6 +23,8 @@ const Home = () => {
         <BestSellers />
       </div>
       <USPStrip />
+      <div className="relative z-10 h-16 bg-white" aria-hidden="true" />
+      <Testimonials />
     </div>
   );
 };

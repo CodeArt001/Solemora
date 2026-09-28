@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCartStore } from "../../Cart/useCartStore";
+import { isAuthenticated } from "../../auth/auth";
 
 import mainShoe from "../../assets/shoe.svg";
 import thumb1 from "../../assets/thumb1.svg";
@@ -68,8 +69,7 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     setMessage({ text: "", type: "" });
 
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!isAuthenticated()) {
       setMessage({
         text: "Please sign in to add items to your cart.",
         type: "error",

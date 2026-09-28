@@ -1,6 +1,6 @@
-import navBG from "../assets/image.svg";
+import mensImg from "../assets/mens.avif";
 // import CategoryHero from "./Features/CategoryHero";
-import CategoryCarousel from "../components/CategoryCarousel";
+// import CategoryCarousel from "../components/CategoryCarousel";
 import ProductGrid from "../components/ProductGrid";
 
 // Swap these for real product images from your assets folder
@@ -19,25 +19,33 @@ const manProducts = [
 
 const Man = () => {
   return (
-    <div
-      className="relative bg-no-repeat bg-center bg-cover"
-      style={{ backgroundImage: `url(${navBG})` }}
-    >
-      <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-      <div className="relative z-10">
-        <CategoryHero
-          title="BUILT DIFFERENT. STYLED SHARPER."
-          tagline="Bold sneakers, formal fits, and everyday essentials for the modern man."
-        />
-      </div>
-
-      <div className="xl:px-10 px-4 mt-4 xl:mr-8 pb-4 relative z-10">
-        <CategoryCarousel />
-      </div>
-
-      <div className="bg-[#1E1E1E] relative z-10">
+    <div>
+      <section
+        className="relative bg-no-repeat bg-center min-h-[420px] bg-cover"
+        style={{ backgroundImage: `url(${mensImg})` }}
+      >
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+        <div className="relative z-10 pt-10">
+          <CategoryHero
+            title={
+              <>
+                {" "}
+                BUILT DIFFERENT. <br /> STYLED SHARPER.{" "}
+              </>
+            }
+            tagline={
+              <>
+                {" "}
+                Bold sneakers, formal fits,
+                <br /> and everyday essentials for the modern man.
+              </>
+            }
+          />
+        </div>
+      </section>
+      <section className="bg-[#1E1E1E]">
         <ProductGrid title="MEN'S COLLECTION" products={manProducts} />
-      </div>
+      </section>
     </div>
   );
 };
