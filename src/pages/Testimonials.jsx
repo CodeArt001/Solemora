@@ -29,7 +29,7 @@ const Testimonials = () => {
       ([entry]) => {
         setInView(entry.isIntersecting);
       },
-      { threshold: 0, rootMargin: "0px 0px -70% 0px" },
+      { threshold: 0, rootMargin: "0px 0px -40% 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -65,7 +65,7 @@ const Testimonials = () => {
       <div className="flex items-center gap-4 mb-6">
         <p
           className="testi-anim text-white font-title text-2xl"
-          style={anim("testiFadeUp", 0.6, 0)}
+          style={anim("testiFadeUp", 0.35, 0)}
         >
           WHAT CUSTOMERS SAY
         </p>
@@ -73,7 +73,7 @@ const Testimonials = () => {
           className="testi-anim flex-1 h-[2px] bg-white/30"
           style={{
             transformOrigin: "left",
-            ...anim("testiLineGrow", 0.9, 0.2),
+            ...anim("testiLineGrow", 0.45, 0.05),
           }}
         />
       </div>
@@ -83,7 +83,7 @@ const Testimonials = () => {
           <div
             key={i}
             className="testi-anim bg-white rounded-xl p-5 flex flex-col gap-3 transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#D6A36A]/20"
-            style={anim("testiFadeUp", 0.6, 0.3 + i * 0.15)}
+            style={anim("testiFadeUp", 0.35, 0.05 + i * 0.06)}
           >
             <StarRating />
             <p className="text-black font-body text-sm leading-relaxed">
