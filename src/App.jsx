@@ -29,12 +29,13 @@ function App() {
         </div>
       )}
       <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/man" element={<Man />} />
+
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
-          <Route path="/man" element={<Man />} />
           {/* <Route path="/testimonial" element={<Testimonials />} /> */}
           <Route
             path="/order-confirmation/:orderId"

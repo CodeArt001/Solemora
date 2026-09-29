@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useCartStore } from "../../Cart/useCartStore";
 import { isAuthenticated } from "../../auth/auth";
+import { bestSellers } from "./BestSellers";
 
 import mainShoe from "../../assets/shoe.svg";
 import thumb1 from "../../assets/thumb1.svg";
@@ -26,6 +27,7 @@ const tabs = ["Description", "Details", "Shipping & Returns", "Reviews (128)"];
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const addToCart = useCartStore((state) => state.addToCart);
 
   const [product, setProduct] = useState(null);
@@ -42,6 +44,17 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       setFetching(true);
+
+      const selectedProduct =
+        location.state?.product ||
+        bestSellers.find((item) => String(item.id) === String(id));
+
+      if (selectedProduct) {
+        setProduct(selectedProduct);
+        setActiveImage(selectedProduct.image);
+        setFetching(false);
+        return;
+      }
 
       try {
         const productId = id || 1;
@@ -64,7 +77,7 @@ const ProductDetail = () => {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, location.state]);
 
   const handleAddToCart = async () => {
     setMessage({ text: "", type: "" });

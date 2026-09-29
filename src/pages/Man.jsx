@@ -9,6 +9,7 @@ import second from "../assets/OIP2.svg";
 import third from "../assets/OIP3.svg";
 import fourth from "../assets/OIP4.svg";
 import CategoryHero from "../components/CategoryHero";
+import CuratedBestSellers from "./CurrentbestSellers";
 
 const manProducts = [
   { name: "Formal Oxford", price: 220, image: first },
@@ -46,6 +47,9 @@ const Man = () => {
       <section className="bg-[#1E1E1E]">
         <ProductGrid title="MEN'S COLLECTION" products={manProducts} />
       </section>
+      <div>
+        <CuratedBestSellers />
+      </div>
     </div>
   );
 };

@@ -7,18 +7,21 @@ import Testimonials from "../pages/Testimonials";
 
 const Home = () => {
   return (
-    <div
-      className="relative bg-no-repeat bg-center bg-cover"
-      style={{ backgroundImage: `url(${navBG})` }}
-    >
-      <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-      <div className="relative z-10 ">
-        <HeroSection />
-      </div>
+    <div className="relative bg-[#1E1E1E]">
+      <section
+        className="relative isolate min-h-[740px] xl:min-h-[700px] overflow-hidden bg-no-repeat bg-center bg-cover"
+        style={{ backgroundImage: `url(${navBG})` }}
+      >
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+        <div className="relative z-10">
+          <HeroSection />
+        </div>
+      </section>
 
-      <div className="xl:px-10 px-4 mt-8 xl:mr-8 pb-4 relative z-10">
+      <div className="relative z-10 -mt-[11rem] xl:px-10 px-4 py-4 xl:mr-8">
         <CategoryCarousel />
       </div>
+
       <div className="bg-[#1E1E1E] relative z-10">
         <BestSellers />
       </div>
