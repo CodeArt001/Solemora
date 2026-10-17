@@ -11,7 +11,7 @@ import womenBest1 from "../assets/best.avif";
 import studioLift from "../assets/studiolift.jpg";
 import softStep from "../assets/softstep.avif";
 import auraKnit from "../assets/Aurakit.avif";
-import miniDash from "../assets/minidash.avif";
+import miniDash from "../assets/MiniDash.avif";
 import playground from "../assets/playground.webp";
 import tinyTrek from "../assets/kidsImage.jpg";
 import colorPop from "../assets/colorpop.webp";

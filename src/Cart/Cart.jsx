@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useCartStore } from "../store/useCartStore";
+import { useCartStore } from "./useCartStore";
 
 export default function Cart() {
   const { cartItems, fetchCart, isLoading } = useCartStore();
