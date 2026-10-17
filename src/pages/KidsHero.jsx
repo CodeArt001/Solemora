@@ -6,7 +6,7 @@ import image2 from "../assets/round2.svg";
 import image3 from "../assets/round3.svg";
 import image4 from "../assets/round4.svg";
 import StarRating from "../components/StarRating";
-import KidsBestSellers from "./Kidsbestsellers";
+import KidsBestSellers from "./KidsBestSellers";
 
 const customerAvatars = [image1, image2, image3, image4];
 
