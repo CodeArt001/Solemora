@@ -2,17 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useCartStore } from "../../Cart/useCartStore";
 import { isAuthenticated } from "../../auth/auth";
-import { bestSellers } from "./BestSellers";
+import { bestSellers } from "../../data/productCatalog";
 
-import mainShoe from "../../assets/shoe.svg";
-import thumb1 from "../../assets/thumb1.svg";
-import thumb2 from "../../assets/thumb2.svg";
-import thumb3 from "../../assets/thumb3.svg";
-import thumb4 from "../../assets/thumb4.svg";
-import thumb5 from "../../assets/thumb5.svg";
 import featureShoe from "../../assets/shoe.svg";
-
-const thumbnails = [thumb1, thumb2, thumb3, thumb4, thumb5];
 
 const defaultColors = [
   { name: "Black", hex: "#1a1a1a" },
@@ -33,15 +25,28 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [fetching, setFetching] = useState(true);
 
-  const [activeImage, setActiveImage] = useState(mainShoe);
+  // Thumbnails now come from the product itself, not a fixed unrelated array.
+  const [thumbnails, setThumbnails] = useState([]);
+  const [activeImage, setActiveImage] = useState(null);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
 
   useEffect(() => {
+    const applyProduct = (p) => {
+      setProduct(p);
+      // Use the product's own gallery if it has one, otherwise
+      // fall back to repeating its single image so the thumbnail
+      // strip always matches the shoe actually being viewed.
+      const gallery = p.images && p.images.length > 0 ? p.images : [p.image];
+      setThumbnails(gallery);
+      setActiveImage(gallery[0]);
+    };
+
     const fetchProduct = async () => {
       setFetching(true);
 
@@ -50,8 +55,7 @@ const ProductDetail = () => {
         bestSellers.find((item) => String(item.id) === String(id));
 
       if (selectedProduct) {
-        setProduct(selectedProduct);
-        setActiveImage(selectedProduct.image);
+        applyProduct(selectedProduct);
         setFetching(false);
         return;
       }
@@ -67,7 +71,7 @@ const ProductDetail = () => {
         }
 
         const data = await response.json();
-        setProduct(data);
+        applyProduct(data);
       } catch (err) {
         console.error(err);
         setProduct(null);
@@ -102,15 +106,19 @@ const ProductDetail = () => {
     try {
       setLoading(true);
 
-      // 1. Ensure productId is a valid number for Java Long backend
       const rawId = product?.id || id;
       const cleanId =
         typeof rawId === "string" ? rawId.replace(":", "") : rawId;
-      const numericProductId = Number(cleanId) || 1; // Fallback to 1 if NaN
+      const numericProductId = Number(cleanId) || 1;
 
       const colorName = defaultColors[selectedColor]?.name || "Black";
 
-      await addToCart(numericProductId, 1, Number(selectedSize), colorName);
+      await addToCart(
+        numericProductId,
+        quantity,
+        Number(selectedSize),
+        colorName,
+      );
 
       setMessage({
         text: "Item added to cart successfully!",
@@ -138,7 +146,6 @@ const ProductDetail = () => {
     );
   }
 
-  // Fallback defaults to prevent undefined property errors
   const displayTitle =
     product?.name || product?.title || "Solemora Air Max Pro";
   const displayPrice = product?.price || "134";
@@ -148,7 +155,6 @@ const ProductDetail = () => {
 
   return (
     <div className="bg-[#0d0d0d] min-h-screen text-white xl:px-16 px-4 py-8">
-      {/* Breadcrumb */}
       <p className="text-xs sm:text-sm text-gray-400 mb-6 overflow-x-auto whitespace-nowrap">
         Home <span className="mx-1">›</span> Men <span className="mx-1">›</span>{" "}
         Sneakers <span className="mx-1">›</span>{" "}
@@ -156,18 +162,21 @@ const ProductDetail = () => {
       </p>
 
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
-        {/* Gallery */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex sm:flex-col gap-3 order-2 sm:order-1 overflow-x-auto sm:overflow-visible">
             {thumbnails.map((thumb, i) => (
               <button
                 key={i}
                 onClick={() => setActiveImage(thumb)}
-                className="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 bg-[#1a1a1a] rounded-lg flex items-center justify-center border border-white/10 hover:border-white/40"
+                className={`flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 bg-[#1a1a1a] rounded-lg flex items-center justify-center border ${
+                  activeImage === thumb
+                    ? "border-[#E8A857]"
+                    : "border-white/10 hover:border-white/40"
+                }`}
               >
                 <img
                   src={thumb}
-                  alt={`thumbnail ${i}`}
+                  alt={`${displayTitle} thumbnail ${i + 1}`}
                   className="w-9 h-9 sm:w-10 sm:h-10 object-contain"
                 />
               </button>
@@ -186,7 +195,6 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Product Info */}
         <div className="flex-1">
           <span className="bg-[#E8A857] text-black text-xs font-bold px-3 py-1 rounded-full">
             Best Seller
@@ -209,7 +217,6 @@ const ProductDetail = () => {
             {displayDesc}
           </p>
 
-          {/* Color Selector */}
           <div className="border-t border-white/10 mt-6 pt-6">
             <p className="text-sm mb-3">
               Color: {defaultColors[selectedColor]?.name || "Selected"}
@@ -228,7 +235,6 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Size Selector */}
           <div className="mt-6">
             <p className="text-sm mb-3">Size: US</p>
             <div className="flex flex-wrap gap-3">
@@ -260,7 +266,42 @@ const ProductDetail = () => {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-4 mt-6">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-4 mt-6">
+            <div className="flex items-center gap-3">
+              <span className="text-sm">Quantity</span>
+              <div
+                role="group"
+                aria-label="Quantity"
+                className="flex h-12 items-center rounded-lg border border-white/15 bg-[#1a1a1a]"
+              >
+                <button
+                  type="button"
+                  aria-label="Decrease quantity"
+                  onClick={() =>
+                    setQuantity((current) => Math.max(1, current - 1))
+                  }
+                  disabled={quantity === 1 || loading}
+                  className="h-full w-11 text-lg hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  −
+                </button>
+                <span
+                  aria-live="polite"
+                  className="min-w-8 text-center text-sm tabular-nums"
+                >
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  aria-label="Increase quantity"
+                  onClick={() => setQuantity((current) => current + 1)}
+                  disabled={loading}
+                  className="h-full w-11 text-lg hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  +
+                </button>
+              </div>
+            </div>
             <button
               onClick={handleAddToCart}
               disabled={loading}
@@ -272,7 +313,6 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="bg-[#1a1a1a] rounded-2xl mt-12 p-5 sm:p-8 flex flex-col lg:flex-row gap-8 lg:gap-10 items-center">
         <div className="flex-1 w-full">
           <div className="flex gap-4 sm:gap-8 border-b border-white/10 pb-4 mb-6 overflow-x-auto whitespace-nowrap">

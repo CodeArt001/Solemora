@@ -1,45 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-// Swap these for your real product photos
-import best1 from "../assets/best1.avif";
-import best2 from "../assets/best.avif";
-import best3 from "../assets/best3.webp";
-import best4 from "../assets/best4.avif";
-
-const defaultProducts = [
-  {
-    id: 1,
-    name: "Apex Runner",
-    price: 190,
-    collection: "Signature collection",
-    image: best1,
-  },
-  {
-    id: 2,
-    name: "City Court",
-    price: 220,
-    collection: "Signature collection",
-    image: best2,
-  },
-  {
-    id: 3,
-    name: "Trail One",
-    price: 175,
-    collection: "Signature collection",
-    image: best3,
-  },
-  {
-    id: 4,
-    name: "Mono High",
-    price: 240,
-    collection: "Signature collection",
-    image: best4,
-  },
-];
+import { menProducts } from "../data/productCatalog";
 
 const CuratedBestSellers = ({
-  products = defaultProducts,
+  products = menProducts,
   viewAllPath = "/products",
 }) => {
   const [liked, setLiked] = useState([]);
@@ -51,7 +16,10 @@ const CuratedBestSellers = ({
   };
 
   return (
-    <div className="bg-[#F5F1EA] xl:px-16 px-4 py-12">
+    <div
+      id="best-sellers"
+      className="scroll-mt-32 bg-[#F5F1EA] xl:px-16 px-4 py-12"
+    >
       <div className="flex items-end justify-between mb-8">
         <div>
           <p className="text-xs font-semibold tracking-[0.25em] text-[#D6A36A] mb-4">

@@ -8,13 +8,13 @@ import colored from "../../assets/colored.png";
 import { Link } from "react-router-dom";
 
 const categories = [
-  { name: "Sneakers", image: red, path: "/man" },
-  { name: "Casual", image: lace },
-  { name: "Formal", image: blue },
-  { name: "Limited Edition", image: brown },
-  { name: "Leather", image: black },
-  { name: "Leather", image: black },
-  { name: "Colored", image: colored },
+  { name: "Sneakers", image: red, path: "/products/1" },
+  { name: "Casual", image: lace, path: "/products/2" },
+  { name: "Formal", image: blue, path: "/products/3" },
+  { name: "Limited Edition", image: brown, path: "/products/4" },
+  { name: "Leather", image: black, path: "/products/5" },
+  { name: "Leather", image: black, path: "/products/5" },
+  { name: "Colored", image: colored, path: "/products/2" },
 ];
 
 const CategoryCarousel = () => {
@@ -55,7 +55,7 @@ const CategoryCarousel = () => {
       >
         {categories.map((cat, index) => (
           <Link
-            to={cat.path || "#"}
+            to={cat.path}
             key={index}
             className="flex-shrink-0 min-w-[160px] sm:min-w-[220px] h-full bg-gray-300/50 rounded-xl flex flex-col items-center justify-center overflow-hidden py-2 px-2"
           >

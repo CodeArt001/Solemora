@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { isAuthenticated } from "../auth/auth";
 
 const CategoryHero = ({ title, tagline }) => {
   const navigate = useNavigate();
-  const authenticated = isAuthenticated();
 
   return (
     <div className="xl:px-10 px-4 pt-10 pb-6 text-center xl:text-left">
@@ -18,14 +16,20 @@ const CategoryHero = ({ title, tagline }) => {
       <div className="flex flex-col xl:flex-row gap-6 mt-8 text-white py-5">
         <button
           type="button"
-          disabled={!authenticated}
-          title={authenticated ? "Shop now" : "Sign in to shop"}
           onClick={() => navigate("/products/1")}
-          className="bg-[#D6A36A] rounded-3xl px-10 py-2 disabled:cursor-not-allowed"
+          className="bg-[#D6A36A] rounded-3xl px-10 py-2 transition-transform hover:scale-105 active:scale-95"
         >
           SHOP NOW
         </button>
-        <button className="border-white border-3 rounded-3xl px-10 py-2">
+        <button
+          type="button"
+          onClick={() =>
+            document
+              .getElementById("best-sellers")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" })
+          }
+          className="border-white border-3 rounded-3xl px-10 py-2"
+        >
           EXPLORE
         </button>
       </div>

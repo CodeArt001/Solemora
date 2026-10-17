@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @theme {
   --font-heading: "Space Grotesk", sans serif;
-  --animate-marquee: marquee 20s linear infinite;
+  --animate-marquee: marquee 42s linear infinite;
   --font-script: "Great Vibes", cursive;
   --font-title: "Monsterrat", sans serif;
   --font-body: "Inter", sans serif;
@@ -13,6 +13,26 @@
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+.announcement-window {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+}
+
+.announcement-window:hover .announcement-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announcement-track {
+    animation: none;
   }
 }
 

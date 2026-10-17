@@ -120,6 +120,10 @@ export const useCartStore = create((set, get) => ({
    * Process Checkout
    */
   checkout: async (shippingDetails = {}) => {
+    if (!isAuthenticated()) {
+      throw new Error("Please sign in to complete checkout.");
+    }
+
     set({ isLoading: true });
     try {
       const response = await fetchAPI("/orders/checkout", {

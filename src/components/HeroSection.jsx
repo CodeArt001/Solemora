@@ -5,7 +5,6 @@ import image2 from "../assets/round2.svg";
 import image3 from "../assets/round3.svg";
 import image4 from "../assets/round4.svg";
 import StarRating from "./StarRating";
-import { isAuthenticated } from "../auth/auth";
 
 // Animation helper: staggered fade-up. Only adds animation, no layout changes.
 const fadeUp = (delay, isVisible) => ({
@@ -15,7 +14,6 @@ const fadeUp = (delay, isVisible) => ({
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const authenticated = isAuthenticated();
   const heroRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -49,7 +47,7 @@ const HeroSection = () => {
         }
       `}</style>
 
-      <div className="xl:relative py-4 text-center xl:text-left">
+      <div className="xl:relative mt-10 text-center xl:text-left">
         <p
           className="hero-anim font-title text-white font-bold xl:text-7xl text-5xl"
           style={fadeUp(0, isVisible)}
@@ -57,7 +55,7 @@ const HeroSection = () => {
           WALK YOUR
         </p>
         <p
-          className="hero-anim font-script text-8xl italic text-[#D6A36A] xl:absolute xl:left-[1%] xl:-bottom-16"
+          className="hero-anim font-script text-8xl italic text-[#D6A36A] xl:absolute xl:left-[1%] xl:-bottom-20"
           style={{
             animation: isVisible ? "heroScriptIn 0.9s ease-out both" : "none",
             animationDelay: "0.35s",
@@ -79,14 +77,20 @@ const HeroSection = () => {
       >
         <button
           type="button"
-          disabled={!authenticated}
-          title={authenticated ? "Shop now" : "Sign in to shop"}
           onClick={() => navigate("/products/1")}
-          className="bg-[#D6A36A] rounded-3xl px-10 py-2 disabled:cursor-not-allowed transition-transform duration-300 enabled:hover:scale-105 enabled:active:scale-95"
+          className="bg-[#D6A36A] rounded-3xl px-10 py-2 transition-transform duration-300 hover:scale-105 active:scale-95"
         >
           SHOP NOW
         </button>
-        <button className="border-white border-3 rounded-3xl px-10 py-2 transition-transform duration-300 hover:scale-105 active:scale-95">
+        <button
+          type="button"
+          onClick={() =>
+            document
+              .getElementById("best-sellers")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" })
+          }
+          className="border-white border-3 rounded-3xl px-10 py-2 transition-transform duration-300 hover:scale-105 active:scale-95"
+        >
           EXPLORE
         </button>
       </div>

@@ -12,7 +12,9 @@ import ProtectedRoute from "./route/ProtectedRoute";
 import Checkout from "./Cart/Checkout";
 import OrderConfirmation from "./Cart/OrderConfirmation";
 import Man from "./pages/Man";
+import WomanHero from "./pages/WomanHero";
 import Footer from "./pages/Footer";
+import KidsHero from "./pages/KidsHero";
 // import Testimonials from "./pages/Testimonials";
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/products/:id" element={<ProductDetail />} />
         <Route path="/man" element={<Man />} />
+        <Route path="/woman" element={<WomanHero />} />
+        <Route path="/kids" element={<KidsHero />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/checkout" element={<Checkout />} />

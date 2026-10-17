@@ -1,21 +1,9 @@
-import first from "../../assets/OIP.svg";
-import second from "../../assets/OIP2.svg";
-import third from "../../assets/OIP3.svg";
-import fourth from "../../assets/OIP4.svg";
-import fifth from "../../assets/OIP5.svg";
 import { Link } from "react-router-dom";
-
-export const bestSellers = [
-  { id: 1, name: "Shoe 1", price: 250, image: first, featured: true },
-  { id: 2, name: "Shoe 2", price: 150, image: second },
-  { id: 3, name: "Shoe 3", price: 280, image: third },
-  { id: 4, name: "Shoe 4", price: 230, image: fourth },
-  { id: 5, name: "Shoe 5", price: 300, image: fifth },
-];
+import { bestSellers } from "../../data/productCatalog";
 
 const BestSellers = () => {
   return (
-    <div className="xl:px-10 px-4 py-10">
+    <div id="best-sellers" className="scroll-mt-32 xl:px-10 px-4 py-10">
       <div className="flex items-center gap-4 mb-6">
         <p className="text-white font-title text-2xl">BEST SELLERS</p>
         <div className="flex-1 h-[2px] bg-white/30" />
